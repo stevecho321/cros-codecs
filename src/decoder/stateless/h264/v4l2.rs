@@ -43,8 +43,8 @@ impl StatelessH264DecoderBackend for V4l2StatelessDecoderBackend {
         let mb_unit = 16;
         let map_unit = 16;
         let resolution = Resolution::from((
-            (sps.pic_width_in_mbs_minus1 + 1) * mb_unit,
-            (sps.pic_height_in_map_units_minus1 + 1) * map_unit,
+            (sps.pic_width_in_mbs_minus1 + 1) as u32 * mb_unit,
+            (sps.pic_height_in_map_units_minus1 + 1) as u32 * map_unit,
         ));
         self.device.set_resolution(resolution);
         Ok(())
