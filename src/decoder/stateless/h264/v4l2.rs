@@ -24,6 +24,7 @@ use crate::codec::h264::parser::Sps;
 use crate::codec::h264::picture::PictureData;
 use crate::decoder::stateless::h264::StatelessH264DecoderBackend;
 use crate::decoder::stateless::h264::H264;
+use crate::decoder::stateless::NewPictureError;
 use crate::decoder::stateless::StatelessBackendResult;
 use crate::decoder::stateless::StatelessDecoder;
 use crate::decoder::stateless::StatelessDecoderBackendPicture;
@@ -52,9 +53,8 @@ impl StatelessH264DecoderBackend for V4l2StatelessDecoderBackend {
 
     fn new_picture(
         &mut self,
-        _: &PictureData,
         timestamp: u64,
-    ) -> StatelessBackendResult<Self::Picture> {
+    ) -> NewPictureError<Self::Picture> {
         Ok(Rc::new(RefCell::new(V4l2Picture::new(
             self.device.alloc_request(timestamp),
         ))))
