@@ -62,10 +62,9 @@ impl StatelessH264DecoderBackend for V4l2StatelessDecoderBackend {
 
     fn new_field_picture(
         &mut self,
-        _: &PictureData,
         _: u64,
         _: &Self::Handle,
-    ) -> StatelessBackendResult<Self::Picture> {
+    ) -> NewPictureResult<Self::Picture> {
         todo!()
     }
 
