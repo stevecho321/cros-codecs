@@ -80,7 +80,7 @@ impl StatelessH264DecoderBackend for V4l2StatelessDecoderBackend {
         let mut dpb_entries = Vec::<V4l2CtrlH264DpbEntry>::new();
         let mut ref_pictures = Vec::<Rc<RefCell<V4l2Picture>>>::new();
         for entry in dpb.entries() {
-            let ref_picture = match &entry.handle {
+            let ref_picture = match &entry.reference {
                 Some(handle) => handle.handle.borrow().picture.clone(),
                 None => todo!(),
             };
