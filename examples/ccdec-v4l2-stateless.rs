@@ -17,6 +17,7 @@ use cros_codecs::decoder::stateless::StatelessDecoder;
 use cros_codecs::decoder::stateless::StatelessVideoDecoder;
 use cros_codecs::decoder::BlockingMode;
 use cros_codecs::decoder::DecodedHandle;
+use cros_codecs::decoder::DynDecodedHandle;
 use cros_codecs::multiple_desc_type;
 use cros_codecs::utils::simple_playback_loop;
 use cros_codecs::utils::simple_playback_loop_owned_frames;
@@ -141,8 +142,13 @@ fn main() {
             let frame_iter = Box::new(NalIterator::<H264Nalu>::new(&input))
                 as Box<dyn Iterator<Item = Cow<[u8]>>>;
 
-            let decoder = Box::new(StatelessDecoder::<H264, _>::new_v4l2(blocking_mode))
-                as Box<dyn StatelessVideoDecoder<_>>;
+            // TODO: check whether this is background why this was done differently for v4l2.
+            // It might have intended to make this change both for vaapi and v4l2. first with v4l2 here.
+            // let decoder = Box::new(StatelessDecoder::<H264, _>::new_v4l2(blocking_mode))
+            //     as Box<dyn StatelessVideoDecoder<_>>;
+
+            let decoder = StatelessDecoder::<H264, _>::new_v4l2(blocking_mode)
+                 .into_trait_object();
 
             (decoder, frame_iter)
         }
@@ -152,7 +158,7 @@ fn main() {
         EncodedFormat::AV1 => todo!(),
     };
 
-    let mut on_new_frame = |handle: V4l2StatelessDecoderHandle| {
+    let mut on_new_frame = |handle: DynDecodedHandle<()>| {
         let picture = handle.dyn_picture();
         let mut handle = picture.dyn_mappable_handle().unwrap();
         let buffer_size = handle.image_size();
