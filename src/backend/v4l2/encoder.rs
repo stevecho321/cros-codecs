@@ -23,15 +23,15 @@ use v4l2r::device::poller::Poller;
 use v4l2r::device::queue::direction::Capture;
 use v4l2r::device::queue::direction::Output;
 use v4l2r::device::queue::dqbuf::DqBuffer;
-use v4l2r::device::queue::qbuf::get_free::GetFreeBufferError;
-use v4l2r::device::queue::qbuf::get_free::GetFreeCaptureBuffer;
-use v4l2r::device::queue::qbuf::get_free::GetFreeOutputBuffer;
-use v4l2r::device::queue::qbuf::OutputQueueable;
-use v4l2r::device::queue::qbuf::OutputQueueableProvider;
+use v4l2r::device::queue::OutputQueueableProvider;
 use v4l2r::device::queue::qbuf::QBuffer;
 use v4l2r::device::queue::BuffersAllocated;
 use v4l2r::device::queue::CreateQueueError;
+use v4l2r::device::queue::GetFreeBufferError;
+use v4l2r::device::queue::GetFreeCaptureBuffer;
+use v4l2r::device::queue::GetFreeOutputBuffer;
 use v4l2r::device::queue::Queue;
+use v4l2r::device::queue::OutputQueueable;
 use v4l2r::device::queue::RequestBuffersError;
 use v4l2r::device::AllocatedQueue;
 use v4l2r::device::Device;
@@ -320,7 +320,7 @@ pub trait CaptureBuffers {
     /// otherwise if the buffer may not be queue returns false.
     fn queue(
         &mut self,
-        buffer: QBuffer<'_, Capture, Vec<Self::PlaneHandle>, Vec<Self::PlaneHandle>>,
+        buffer: QBuffer<Capture, Vec<Self::PlaneHandle>, Vec<Self::PlaneHandle>>,
     ) -> anyhow::Result<bool>;
 
     /// Maps the the buffer and returns its contents in form of [`Vec<u8>`]
@@ -335,7 +335,7 @@ impl CaptureBuffers for MmapingCapture {
 
     fn queue(
         &mut self,
-        buffer: QBuffer<'_, Capture, Vec<Self::PlaneHandle>, Vec<Self::PlaneHandle>>,
+        buffer: QBuffer<Capture, Vec<Self::PlaneHandle>, Vec<Self::PlaneHandle>>,
     ) -> anyhow::Result<bool> {
         buffer.queue()?;
         Ok(true)
