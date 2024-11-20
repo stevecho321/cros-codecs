@@ -320,7 +320,7 @@ pub trait CaptureBuffers {
     /// otherwise if the buffer may not be queue returns false.
     fn queue(
         &mut self,
-        buffer: QBuffer<Capture, Vec<Self::PlaneHandle>, Vec<Self::PlaneHandle>>,
+        buffer: QBuffer<Capture, Vec<Self::PlaneHandle>, Vec<Self::PlaneHandle>, &Queue<Capture, BuffersAllocated<Vec<Self::PlaneHandle>>> >,
     ) -> anyhow::Result<bool>;
 
     /// Maps the the buffer and returns its contents in form of [`Vec<u8>`]
@@ -335,7 +335,7 @@ impl CaptureBuffers for MmapingCapture {
 
     fn queue(
         &mut self,
-        buffer: QBuffer<Capture, Vec<Self::PlaneHandle>, Vec<Self::PlaneHandle>>,
+        buffer: QBuffer<Capture, Vec<Self::PlaneHandle>, Vec<Self::PlaneHandle>, &Queue<Capture, BuffersAllocated<Vec<Self::PlaneHandle>>> >,
     ) -> anyhow::Result<bool> {
         buffer.queue()?;
         Ok(true)
